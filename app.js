@@ -48,7 +48,7 @@
     return Number.isFinite(price) && price > 0 ? price : 99;
   }
 
-  function isFree(s) { return s && svcPrice(s) === 0; }
+  function isFree(s) { return s && (svcPrice(s) === 0 || (s.name && s.name.toLowerCase().indexOf('ac service') !== -1)); }
 
   function priceLabel(value) {
     var amount = Number(value);
