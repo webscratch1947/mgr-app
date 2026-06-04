@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#faf6ee" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>MGR All In One Services</title>
+  <link rel="icon" href="logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    function syncAppViewport() {
+      var width = Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0, 320);
+      document.documentElement.style.setProperty('--app-vw', width + 'px');
+    }
+
+    window.addEventListener('resize', syncAppViewport, { passive: true });
+    window.addEventListener('orientationchange', syncAppViewport, { passive: true });
+    document.addEventListener('DOMContentLoaded', syncAppViewport);
+    syncAppViewport();
+
+    window.__MGR_CFG__ = {
+      url: 'https://asuafslcisycchjpakfw.supabase.co',
+      anon: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzdWFmc2xjaXN5Y2NoanBha2Z3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MDQ1NDIsImV4cCI6MjA5MTM4MDU0Mn0.dRCMPtzPEVN6ieeh2c9gQ6vlQsX41MOkL3um1ByKHRI',
+      rzp: 'rzp_live_Si3p2JprqTkHTd',
+      apiBase: 'https://www.mgrallinoneservices.com'
+    };
+  </script>
+</head>
+
+<body>
+
+  <!-- SPLASH LOADING SCREEN -->
+  <div id="splashScreen">
+    <div class="splash-inner">
+      <img src="logo.png" alt="MGR" class="splash-logo" />
+      <div class="splash-title">MGR ALL IN ONE</div>
+      <div class="splash-sub">Services</div>
+      <div class="splash-spinner">
+        <div class="splash-dot"></div>
+        <div class="splash-dot"></div>
+        <div class="splash-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastHost"></div>
+  <div id="modalHost"></div>
+
+  <!-- SIDEBAR OVERLAY -->
+  <div id="sbOverlay" class="sb-overlay"></div>
+
+  <!-- SIDEBAR DRAWER -->
+  <div id="sbDrawer" class="sb-drawer" aria-hidden="true">
+    <!-- Sidebar header with logo -->
+    <div class="sb-logo-head">
+      <div class="sb-logo-row">
+        <img src="logo.png" alt="MGR" class="sb-logo-img" />
+        <div>
+          <div class="sb-logo-title">MGR ALL IN ONE</div>
+          <div class="sb-logo-sub">Services</div>
+        </div>
+      </div>
+      <button class="sb-close" id="sbClose" aria-label="Close">✕</button>
+    </div>
+
+    <!-- User info strip -->
+    <div class="sb-user-strip">
+      <div class="sb-avatar" id="sbAvatar">M</div>
+      <div class="sb-user-info">
+        <div class="sb-name" id="sbName">Guest</div>
+        <div class="sb-email" id="sbEmail">Sign in to continue</div>
+      </div>
+    </div>
+
+    <!-- Role switcher -->
+    <div class="sb-role-row">
+      <button class="sb-role-pill active" id="sbRoleCustomer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        Customer
+      </button>
+      <button class="sb-role-pill" id="sbRoleVendor">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.64 12 19.79 19.79 0 0 1 1.64 3.42 2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.84a16 16 0 0 0 6.25 6.25l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+        Vendor
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <nav class="sb-nav">
+      <button class="sb-link" data-go="home">
+        <span class="sb-link-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        </span>
+        Home
+      </button>
+      <button class="sb-link" data-go="browse">
+        <span class="sb-link-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </span>
+        Browse Services
+      </button>
+      <button class="sb-link" data-go="bookings">
+        <span class="sb-link-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+        </span>
+        My Bookings
+      </button>
+      <button class="sb-link" data-go="profile">
+        <span class="sb-link-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </span>
+        My Profile
+      </button>
+    </nav>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-vendor-section">
+      <div class="sb-section-lbl">Vendor</div>
+      <button class="sb-become-vendor" id="sbBecomeVendor" data-go="vendor">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        Become a Vendor
+      </button>
+      <div class="sb-vendor-pending" id="sbVendorPending">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+        Application pending review
+      </div>
+      <button class="sb-vendor-panel-btn" id="sbVendorPanel" data-go="vendor-panel">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+          <line x1="8" y1="21" x2="16" y2="21" />
+          <line x1="12" y1="17" x2="12" y2="21" />
+        </svg>
+        My Jobs (Vendor Panel)
+      </button>
+      <button class="sb-vendor-panel-btn" id="sbVendorReviews" data-go="vendor-reviews" style="background:#1a2540;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+        My Reviews
+      </button>
+    </div>
+
+    <div class="sb-footer">
+      <button class="sb-signout" id="sbSignOut">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        Sign Out
+      </button>
+    </div>
+  </div>
+
+  <!-- AUTH SCREEN -->
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-hero">
+      <img src="logo.png" alt="MGR" />
+      <h1>MGR All In One Services</h1>
+      <p>Trusted home services across India — book a verified professional in minutes.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" id="tabLogin" data-mode="login" type="button">Log In</button>
+        <button class="auth-tab" id="tabSignup" data-mode="signup" type="button">Register</button>
+      </div>
+      <form id="authForm" autocomplete="on">
+        <div class="field" id="nameField" style="display:none;">
+          <label for="authName">Full name</label>
+          <input id="authName" type="text" autocomplete="name" placeholder="Your full name" />
+        </div>
+        <div class="field" id="phoneField" style="display:none;">
+          <label for="authPhone">Phone</label>
+          <input id="authPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="10-digit mobile number" />
+        </div>
+        <div class="field">
+          <label for="authEmail">Email</label>
+          <input id="authEmail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"
+            required />
+        </div>
+        <div class="field">
+          <label for="authPass">Password</label>
+          <input id="authPass" type="password" autocomplete="current-password" placeholder="Min. 6 characters"
+            required />
+        </div>
+        <div class="auth-error" id="authError" style="display:none;"></div>
+        <button class="btn btn-primary btn-black btn-full" type="submit" id="authSubmit">Log In</button>
+        <div style="text-align:center;margin-top:12px;">
+          <button type="button" id="forgotBtn"
+            style="background:none;border:none;color:#e63946;font-size:13px;cursor:pointer;text-decoration:underline;">Forgot
+            password?</button>
+        </div>
+      </form>
+
+      <!-- FORGOT PASSWORD PANEL -->
+      <div id="forgotPanel" style="display:none;">
+        <p style="font-size:13px;color:#555;margin-bottom:12px;">Enter your registered email and we'll send a reset
+          link.</p>
+        <div class="field">
+          <label for="forgotEmail">Email</label>
+          <input id="forgotEmail" type="email" inputmode="email" placeholder="you@example.com" />
+        </div>
+        <div id="forgotMsg" style="display:none;font-size:13px;margin-bottom:8px;"></div>
+        <button class="btn btn-primary btn-black btn-full" type="button" id="forgotSubmit">Send reset link</button>
+        <div style="text-align:center;margin-top:10px;">
+          <button type="button" id="forgotBack"
+            style="background:none;border:none;color:#e63946;font-size:13px;cursor:pointer;text-decoration:underline;">Back
+            to login</button>
+        </div>
+      </div>
+
+      <!-- RESET PASSWORD PANEL (shown when user clicks email link) -->
+      <div id="resetPanel" style="display:none;">
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:6px;">Set new password</h3>
+        <p style="font-size:13px;color:#555;margin-bottom:16px;">Enter a new password for your account.</p>
+        <div class="field">
+          <label for="resetPass">New password</label>
+          <input id="resetPass" type="password" placeholder="Min. 6 characters" autocomplete="new-password" />
+        </div>
+        <div class="field">
+          <label for="resetPassConfirm">Confirm password</label>
+          <input id="resetPassConfirm" type="password" placeholder="Repeat new password" autocomplete="new-password" />
+        </div>
+        <div id="resetMsg" style="display:none;font-size:13px;margin-bottom:8px;"></div>
+        <button class="btn btn-primary btn-black btn-full" type="button" id="resetSubmit">Update password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app" style="display:none;">
+
+    <!-- TOP BAR — old style: brand on left, hamburger on right -->
+    <div class="topbar" id="topbar">
+      <button class="topbar-btn" id="backBtn" style="display:none;" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <a href="#" id="topLogo" class="topbar-brand">
+        <img src="logo.png" alt="MGR" class="topbar-brand-img" />
+        <div class="topbar-brand-text">
+          <div class="topbar-brand-name">MGR ALL IN ONE SERVICES</div>
+          <div class="topbar-brand-sub">India</div>
+        </div>
+      </a>
+      <button class="topbar-menu-btn" id="menuBtn" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- VIEWS -->
+    <div class="views-wrap" id="viewsWrap">
+
+      <!-- HOME VIEW -->
+      <div class="view active" id="view-home">
+        <!-- Greeting section (no gradient, clean) -->
+        <div class="home-greeting-section">
+          <div class="home-greet" id="greetUser">Welcome</div>
+          <h2 class="home-subtitle">Book trusted professionals for cleaning, repair, beauty and more — at your doorstep
+            across India.</h2>
+          <div class="home-search-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input id="homeSearch" type="search" placeholder="What service do you need?" />
+          </div>
+        </div>
+
+        <!-- Why MGR section (replaces categories) -->
+        <div class="section">
+          <div class="section-head">
+            <h3>Why choose MGR?</h3>
+          </div>
+          <div class="why-grid">
+            <div class="why-card">
+              <div class="why-icon">✅</div>
+              <div class="why-title">Verified Experts</div>
+              <div class="why-desc">Every professional is background-checked</div>
+            </div>
+            <div class="why-card">
+              <div class="why-icon">🏠</div>
+              <div class="why-title">At Your Door</div>
+              <div class="why-desc">We come to you — anytime, anywhere</div>
+            </div>
+            <div class="why-card">
+              <div class="why-icon">💰</div>
+              <div class="why-title">Transparent Price</div>
+              <div class="why-desc">₹99 platform charge. Final price confirmed after vendor visit — no surprises</div>
+            </div>
+            <div class="why-card">
+              <div class="why-icon">⚡</div>
+              <div class="why-title">Quick Booking</div>
+              <div class="why-desc">Book in under 2 minutes, we handle the rest</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <h3>Popular Services</h3>
+            <button class="see-all" id="seeAllSvc">View all</button>
+          </div>
+          <div class="svc-list" id="popularGrid"></div>
+        </div>
+      </div>
+
+      <!-- BROWSE VIEW -->
+      <div class="view" id="view-browse">
+        <div class="browse-search-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input id="browseSearch" type="search" placeholder="Search services…" />
+        </div>
+        <div class="cat-chips" id="browseChips"></div>
+        <div class="svc-list" id="browseGrid"></div>
+      </div>
+
+      <!-- DETAIL VIEW -->
+      <div class="view" id="view-detail">
+        <div class="detail-img-wrap">
+          <img id="detImg" src="" alt="" loading="lazy" />
+        </div>
+        <div class="detail-body">
+          <div class="detail-meta">
+            <span class="detail-cat" id="detCat"></span>
+            <span class="detail-rating" id="detRating"></span>
+          </div>
+          <h2 class="detail-name" id="detName"></h2>
+          <p class="detail-desc" id="detDesc"></p>
+          <div class="detail-disclaimer" id="detDisclaimer"></div>
+        </div>
+        <div class="detail-footer">
+          <div class="detail-price">₹99 <small>platform charge</small></div>
+          <button class="btn btn-primary" id="detBook">Book this service</button>
+        </div>
+      </div>
+
+      <!-- BOOK VIEW -->
+      <div class="view" id="view-book">
+        <div class="book-svc-info">
+          <div class="book-svc-name" id="bookSvcName"></div>
+          <div class="book-svc-cat" id="bookSvcCat"></div>
+        </div>
+        <div class="book-form">
+          <button class="use-profile-btn" id="bookUseProfile" type="button">Use my saved details</button>
+          <div class="field">
+            <label for="bookName">Your name *</label>
+            <input id="bookName" type="text" placeholder="Full name" />
+          </div>
+          <div class="field">
+            <label for="bookPhone">Phone number *</label>
+            <input id="bookPhone" type="tel" inputmode="tel" placeholder="10-digit mobile number" />
+          </div>
+          <div class="field">
+            <label for="bookAddr">Service address *</label>
+            <textarea id="bookAddr" placeholder="Full address where service is needed" rows="3"></textarea>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="bookDate">Date *</label>
+              <input id="bookDate" type="date" />
+            </div>
+            <div class="field">
+              <label>Time</label>
+              <div class="time-picker-wrap" id="timePickerWrap">
+                <select id="bookTimeHour" class="time-sel">
+                  <option value="01">1</option>
+                  <option value="02">2</option>
+                  <option value="03">3</option>
+                  <option value="04">4</option>
+                  <option value="05">5</option>
+                  <option value="06">6</option>
+                  <option value="07">7</option>
+                  <option value="08">8</option>
+                  <option value="09" selected>9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                </select>
+                <span class="time-colon">:</span>
+                <select id="bookTimeMin" class="time-sel">
+                  <option value="00" selected>00</option>
+                  <option value="15">15</option>
+                  <option value="30">30</option>
+                  <option value="45">45</option>
+                </select>
+                <select id="bookTimeAmPm" class="time-sel time-ampm">
+                  <option value="AM">AM</option>
+                  <option value="PM" selected>PM</option>
+                </select>
+              </div>
+              <input type="hidden" id="bookTime" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="bookNotes">Notes (optional)</label>
+            <textarea id="bookNotes" placeholder="Any special instructions…" rows="2"></textarea>
+          </div>
+          <div class="book-disclaimer" id="bookDisclaimer"></div>
+          <button class="btn btn-primary btn-full" id="bookSubmit" type="button">Confirm booking · ₹99</button>
+        </div>
+      </div>
+
+      <!-- SUCCESS VIEW -->
+      <div class="view" id="view-success">
+        <div class="success-wrap">
+          <div class="success-icon">✓</div>
+          <h2 id="successTitle">Booking placed</h2>
+          <p id="successMsg"></p>
+          <div id="successCodeWrap" style="display:none;"></div>
+          <div class="success-actions">
+            <button class="btn btn-primary" id="goBookings">View my bookings</button>
+            <button class="btn btn-outline" id="goHome">Back to home</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOKINGS VIEW -->
+      <div class="view" id="view-bookings">
+        <div id="bookingsList"></div>
+      </div>
+
+      <!-- PROFILE VIEW — old look -->
+      <div class="view" id="view-profile">
+        <div class="profile-card">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="profAvatar">M</div>
+          </div>
+          <div class="profile-name" id="profName">Not signed in</div>
+          <div class="profile-email" id="profEmail"></div>
+          <div class="profile-phone" id="profPhone"></div>
+        </div>
+        <div class="profile-section-lbl">Account</div>
+        <div class="profile-menu">
+          <button class="profile-row" id="rowEditProfile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            <span>Edit Profile</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button class="profile-row" id="rowAddress">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span>Saved Address</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+        <div class="profile-section-lbl">Services</div>
+        <div class="profile-menu">
+          <button class="profile-row" id="rowVendor">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <span>Become a Vendor</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button class="profile-row" id="rowBookings2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <span>My Bookings</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+        <div class="profile-section-lbl">Support</div>
+        <div class="profile-menu">
+          <button class="profile-row" id="rowSupport">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <span>Help &amp; Support</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button class="profile-row" id="rowAbout">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span>About MGR</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+        <div class="profile-menu" style="margin-top:8px;">
+          <button class="profile-row danger" id="rowLogout">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            <span>Sign Out</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- VENDOR APPLY VIEW -->
+      <div class="view" id="view-vendor">
+        <div class="vendor-header">
+          <h2>Become a Vendor</h2>
+          <p>Join MGR's network of verified home service professionals.</p>
+        </div>
+        <div id="vendorPendingNotice" style="display:none;" class="vendor-pending-notice">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          Your vendor application is under review. We'll reach out within 2–3 business days.
+        </div>
+        <form class="vendor-form" id="vendorForm">
+          <div class="field">
+            <label for="vName">Full name *</label>
+            <input id="vName" type="text" placeholder="Your full name" />
+          </div>
+          <div class="field">
+            <label for="vPhone">Phone *</label>
+            <input id="vPhone" type="tel" inputmode="tel" placeholder="10-digit mobile number" />
+          </div>
+          <div class="field">
+            <label for="vEmail">Email *</label>
+            <input id="vEmail" type="email" inputmode="email" placeholder="you@example.com" />
+          </div>
+          <div class="field">
+            <label for="vAddr">Service area / address *</label>
+            <textarea id="vAddr" placeholder="City, area or full address" rows="2"></textarea>
+          </div>
+          <!-- Multi-select skills: all services -->
+          <div class="field">
+            <label>Skills / Services you offer * <span style="font-size:11px;color:var(--muted)">(select all that
+                apply)</span></label>
+            <div class="skills-grid" id="skillsGrid"></div>
+          </div>
+          <div class="field">
+            <label for="vExp">Years of experience</label>
+            <input id="vExp" type="number" min="0" max="50" placeholder="e.g. 3" />
+          </div>
+          <div class="field">
+            <label for="vAbout">About you / experience</label>
+            <textarea id="vAbout" placeholder="Tell us about your experience, tools you use, areas you serve…"
+              rows="3"></textarea>
+          </div>
+          <button class="btn btn-primary btn-full" id="vSubmit" type="button">Submit application</button>
+        </form>
+      </div>
+
+      <!-- VENDOR PANEL VIEW -->
+      <div class="view" id="view-vendor-panel">
+        <div class="vp-head">
+          <h2>My Jobs</h2>
+          <button class="vp-refresh" id="vpRefresh">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+            </svg>
+            Refresh
+          </button>
+        </div>
+        <div class="vp-tabs">
+          <button class="vp-tab active" data-vp="all">All</button>
+          <button class="vp-tab" data-vp="pending">Pending</button>
+          <button class="vp-tab" data-vp="accepted">Accepted</button>
+          <button class="vp-tab" data-vp="completed">Completed</button>
+          <button class="vp-tab" data-vp="reviews">⭐ Reviews</button>
+        </div>
+        <div id="vpList"></div>
+        <div id="vpReviews" style="display:none;"></div>
+      </div>
+
+      <!-- VENDOR REVIEWS VIEW -->
+      <div class="view" id="view-vendor-reviews">
+        <div class="vp-head">
+          <h2>My Reviews</h2>
+          <button class="vp-refresh" id="vrRefresh">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+            </svg>
+            Refresh
+          </button>
+        </div>
+        <div id="vrContent"></div>
+      </div>
+
+    </div><!-- /views-wrap -->
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottomNav">
+      <button class="bn-tab active" data-go="home">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="bn-tab" data-go="browse">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <span>Browse</span>
+      </button>
+      <button class="bn-tab" data-go="bookings">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+        <span>Bookings</span>
+      </button>
+      <button class="bn-tab" data-go="profile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+
+  </div><!-- /app -->
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
