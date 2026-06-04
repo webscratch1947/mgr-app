@@ -43,12 +43,16 @@
   }
 
   function svcPrice(s) {
+    if (s && s.price === 0) return 0;
     var price = Number(s && s.price != null ? s.price : window.MGR_PLATFORM_CHARGE);
     return Number.isFinite(price) && price > 0 ? price : 99;
   }
 
+  function isFree(s) { return s && svcPrice(s) === 0; }
+
   function priceLabel(value) {
     var amount = Number(value);
+    if (amount === 0) return 'FREE';
     if (!Number.isFinite(amount)) amount = 99;
     return 'Rs. ' + amount;
   }
@@ -320,11 +324,15 @@
 
   /* ── Service card HTML ── */
   function svcCardHTML(s) {
+    var free = isFree(s);
+    var priceHtml = free
+      ? '<span class="price free-price">FREE <small>booking</small></span>'
+      : '<span class="price">' + priceLabel(svcPrice(s)) + ' <small>platform</small></span>';
     return '<div class="svc-card" data-svc="' + s.id + '">' +
       '<img class="thumb" loading="lazy" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" />' +
       '<div class="body"><h4>' + esc(s.name) + '</h4>' +
       '<div class="meta">★ ' + s.rating + ' · ' + esc(s.cat) + '</div>' +
-      '<div class="price-row"><span class="price">' + priceLabel(svcPrice(s)) + ' <small>platform</small></span></div>' +
+      '<div class="price-row">' + priceHtml + (s.badge ? ' <span class="svc-badge">' + esc(s.badge) + '</span>' : '') + '</div>' +
       '<button class="book-btn" data-book="' + s.id + '" type="button">Book</button>' +
       '</div></div>';
   }
@@ -595,7 +603,11 @@
     $('#detCat').textContent = svc.cat;
     $('#detRating').textContent = '★ ' + svc.rating;
     $('#detDesc').textContent = svc.desc;
+    if (isFree(svc)) {
+    $('#detDisclaimer').innerHTML = '<b style="color:#16a34a;">🎉 FREE Booking!</b> No platform charge for this service. The vendor will visit, assess, and quote transparently before any work begins.';
+  } else {
     $('#detDisclaimer').innerHTML = '<b>' + priceLabel(svcPrice(svc)) + '</b> is our platform charge. The vendor visits, assesses, and gives a transparent quote before any work begins.';
+  }
     switchView('detail');
   }
 
@@ -604,8 +616,13 @@
     state.bookService = svc;
     $('#bookSvcName').textContent = svc.name;
     $('#bookSvcCat').textContent = svc.cat + ' · ★ ' + svc.rating;
-    $('#bookDisclaimer').innerHTML = '<b>' + priceLabel(svcPrice(svc)) + '</b> is the platform charge. Final price decided after the vendor visit.';
-    var submit = $('#bookSubmit'); if (submit) submit.textContent = 'Confirm booking - ' + priceLabel(svcPrice(svc));
+    if (isFree(svc)) {
+      $('#bookDisclaimer').innerHTML = '<b style="color:#16a34a;">🎉 FREE Booking!</b> No platform charge for this service. Final price decided after the vendor visit.';
+      var submit = $('#bookSubmit'); if (submit) { submit.textContent = 'Confirm FREE Booking'; submit.style.background = '#16a34a'; }
+    } else {
+      $('#bookDisclaimer').innerHTML = '<b>' + priceLabel(svcPrice(svc)) + '</b> is the platform charge. Final price decided after the vendor visit.';
+      var submit = $('#bookSubmit'); if (submit) { submit.textContent = 'Confirm booking - ' + priceLabel(svcPrice(svc)); submit.style.background = ''; }
+    }
     ['bookName', 'bookPhone', 'bookAddr', 'bookDate', 'bookNotes'].forEach(function (id) {
       var el = $('#' + id); if (el) el.value = '';
     });
@@ -637,6 +654,16 @@
     var key = rzpKey();
     var code = genCode();
     var form = { name: name, phone: phone, address: addr, date: date, time: time, notes: notes };
+
+    /* ── FREE service: skip payment entirely ── */
+    if (isFree(svc)) {
+      var btn0 = $('#bookSubmit');
+      btn0.textContent = 'Booking…'; btn0.disabled = true;
+      try { await saveBookingRow(svc, form, '', 'free', code); }
+      catch (e) { btn0.textContent = 'Confirm FREE Booking'; btn0.disabled = false; return toast('Save failed: ' + e.message, 'error'); }
+      btn0.textContent = 'Confirm FREE Booking'; btn0.disabled = false;
+      showSuccess(svc.name); return;
+    }
 
     if (!key) {
       try { await saveBookingRow(svc, form, '', 'unpaid', code); }
