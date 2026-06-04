@@ -2150,3 +2150,22 @@ select {
   border-left: 1px solid var(--border);
   margin-left: 4px;
 }
+
+/* ── FREE service badge ── */
+.free-price {
+  color: #16a34a !important;
+  font-weight: 800;
+}
+
+.svc-badge {
+  display: inline-block;
+  background: #16a34a;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 8px;
+  letter-spacing: .04em;
+  margin-left: 4px;
+  vertical-align: middle;
+}
