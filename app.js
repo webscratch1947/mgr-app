@@ -1,8 +1,8 @@
-/* MGR ALL IN ONE SERVICES â€” App logic (plain JS, no TypeScript) */
+/* MGR ALL IN ONE SERVICES — App logic (plain JS, no TypeScript) */
 (function () {
   'use strict';
 
-  /* â”€â”€ Supabase client â”€â”€ */
+  /* ── Supabase client ── */
   var db = null;
   function getDB() {
     if (db) return db;
@@ -16,7 +16,7 @@
   function rzpKey() { return (window.__MGR_CFG__ || {}).rzp || ''; }
   function apiBase() { return (window.__MGR_CFG__ || {}).apiBase || ''; }
 
-  /* â”€â”€ App state â”€â”€ */
+  /* ── App state ── */
   var state = {
     user: null,          // { authId, dbId, email, name, phone, address, role }
     vendorStatus: 'none', // 'none' | 'pending' | 'approved'
@@ -28,7 +28,7 @@
     nav: ['home']
   };
 
-  /* â”€â”€ Helpers â”€â”€ */
+  /* ── Helpers ── */
   var $ = function (s) { return document.querySelector(s); };
   var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]; }); };
@@ -143,7 +143,7 @@
     return { close: close };
   }
 
-  /* â”€â”€ Auth helpers â”€â”€ */
+  /* ── Auth helpers ── */
   function emailValid(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
   async function fetchUserRow(authId) {
@@ -198,7 +198,7 @@
     syncSidebarVendor();
   }
 
-  /* â”€â”€ Sidebar vendor section sync â”€â”€ */
+  /* ── Sidebar vendor section sync ── */
   /* Also syncs the Customer/Vendor role pills based on the active view */
   function syncSidebarVendor() {
     var become = $('#sbBecomeVendor');
@@ -215,7 +215,7 @@
     panel.style.display = (s === 'approved') ? 'flex' : 'none';
     if (reviews) reviews.style.display = (s === 'approved') ? 'flex' : 'none';
 
-    /* Sync role pills: if on vendor-panel view â†’ Vendor pill active; else â†’ Customer pill active */
+    /* Sync role pills: if on vendor-panel view → Vendor pill active; else → Customer pill active */
     var onVendorView = (state.activeView === 'vendor-panel');
     if (cPill) cPill.classList.toggle('active', !onVendorView);
     if (vPill) vPill.classList.toggle('active', onVendorView);
@@ -250,7 +250,7 @@
     if (s) { s.classList.add('hidden'); setTimeout(function () { if (s.parentNode) s.remove(); }, 450); }
   }
 
-  /* â”€â”€ Bookings â”€â”€ */
+  /* ── Bookings ── */
   async function loadBookings() {
     var c = getDB();
     if (!c || !state.user) { state.bookings = []; return []; }
@@ -318,12 +318,12 @@
     renderBookings(); toast('Booking cancelled');
   }
 
-  /* â”€â”€ Service card HTML â”€â”€ */
+  /* ── Service card HTML ── */
   function svcCardHTML(s) {
     return '<div class="svc-card" data-svc="' + s.id + '">' +
       '<img class="thumb" loading="lazy" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" />' +
       '<div class="body"><h4>' + esc(s.name) + '</h4>' +
-      '<div class="meta">â˜… ' + s.rating + ' Â· ' + esc(s.cat) + '</div>' +
+      '<div class="meta">★ ' + s.rating + ' · ' + esc(s.cat) + '</div>' +
       '<div class="price-row"><span class="price">' + priceLabel(svcPrice(s)) + ' <small>platform</small></span></div>' +
       '<button class="book-btn" data-book="' + s.id + '" type="button">Book</button>' +
       '</div></div>';
@@ -349,7 +349,7 @@
     });
   }
 
-  /* â”€â”€ Render functions â”€â”€ */
+  /* ── Render functions ── */
   function renderHome() {
     var u = state.user;
     $('#greetUser').textContent = u && u.name ? 'Hi ' + u.name.split(' ')[0] : 'Welcome';
@@ -389,16 +389,16 @@
       title: 'Rate your experience',
       body: '<div style="text-align:center;margin-bottom:12px;">' +
         '<div id="starRow" style="font-size:32px;cursor:pointer;letter-spacing:4px;">' +
-        '<span data-star="1">â˜†</span><span data-star="2">â˜†</span><span data-star="3">â˜†</span><span data-star="4">â˜†</span><span data-star="5">â˜†</span>' +
+        '<span data-star="1">☆</span><span data-star="2">☆</span><span data-star="3">☆</span><span data-star="4">☆</span><span data-star="5">☆</span>' +
         '</div></div>' +
-        '<div class="field"><label>Review (optional)</label><textarea id="ratingText" rows="3" placeholder="Share your experienceâ€¦" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:10px;font-family:inherit;font-size:14px;"></textarea></div>',
+        '<div class="field"><label>Review (optional)</label><textarea id="ratingText" rows="3" placeholder="Share your experience…" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:10px;font-family:inherit;font-size:14px;"></textarea></div>',
       actions: [
         { label: 'Skip', kind: 'btn-outline' },
         {
           label: 'Submit rating', kind: 'btn-primary', keepOpen: true, onClick: async function (close) {
             var stars = document.querySelectorAll('#starRow span');
             var rating = 0;
-            stars.forEach(function (s) { if (s.textContent === 'â˜…') rating = parseInt(s.dataset.star, 10); });
+            stars.forEach(function (s) { if (s.textContent === '★') rating = parseInt(s.dataset.star, 10); });
             if (!rating) return toast('Please select a star rating', 'error');
             var review = document.getElementById('ratingText').value.trim();
             var c2 = getDB(); if (!c2) { close(); return; }
@@ -416,11 +416,11 @@
       stars.forEach(function (star) {
         star.addEventListener('click', function () {
           var val = parseInt(star.dataset.star, 10);
-          stars.forEach(function (s) { s.textContent = parseInt(s.dataset.star, 10) <= val ? 'â˜…' : 'â˜†'; });
+          stars.forEach(function (s) { s.textContent = parseInt(s.dataset.star, 10) <= val ? '★' : '☆'; });
         });
         star.addEventListener('mouseover', function () {
           var val = parseInt(star.dataset.star, 10);
-          stars.forEach(function (s) { s.textContent = parseInt(s.dataset.star, 10) <= val ? 'â˜…' : 'â˜†'; });
+          stars.forEach(function (s) { s.textContent = parseInt(s.dataset.star, 10) <= val ? '★' : '☆'; });
         });
       });
     }, 50);
@@ -431,7 +431,7 @@
     if (!state.user) {
       list_el.innerHTML = '<div class="empty"><h4>Please sign in</h4><p>Log in to see your bookings.</p></div>'; return;
     }
-    list_el.innerHTML = '<div class="loader">Loadingâ€¦</div>';
+    list_el.innerHTML = '<div class="loader">Loading…</div>';
     var list = await loadBookings();
     if (!list.length) {
       list_el.innerHTML = '<div class="empty"><h4>No bookings yet</h4><p>Browse services and book your first one.</p></div>'; return;
@@ -445,13 +445,13 @@
       var codeBlock = '';
       if (aStatus === 'accepted' && b._entryCode && !b._entryConfirmed) {
         codeBlock = '<div class="vcode">' +
-          '<small>ðŸ”’ Entry Verification Code</small>' +
+          '<small>🔒 Entry Verification Code</small>' +
           '<div class="vcode-val">' + esc(b._entryCode) + '</div>' +
           '<div class="vcode-hint">Ask the vendor for this code. Match it. Then tap confirm.</div>' +
-          '<button class="btn btn-primary" style="width:100%;margin-top:10px;" data-confirm-entry="' + esc(b.id) + '" data-asn-id="' + esc(b._assignmentId) + '" type="button">âœ… Confirm Vendor âœ“</button>' +
+          '<button class="btn btn-primary" style="width:100%;margin-top:10px;" data-confirm-entry="' + esc(b.id) + '" data-asn-id="' + esc(b._assignmentId) + '" type="button">✅ Confirm Vendor ✓</button>' +
           '</div>';
       } else if (b._entryConfirmed && bStatus !== 'completed') {
-        codeBlock = '<div class="vcode vcode-ok"><small>âœ… Vendor confirmed â€” work in progress</small></div>';
+        codeBlock = '<div class="vcode vcode-ok"><small>✅ Vendor confirmed — work in progress</small></div>';
       } else if (bStatus === 'pending' || bStatus === 'confirmed' || bStatus === 'assigned' || aStatus === 'assigned' || aStatus === 'pending') {
         codeBlock = '<div class="vcode vcode-pending"><small>Verification code</small><span>Visible after the vendor accepts your booking</span></div>';
       }
@@ -460,7 +460,7 @@
       var completionBlock = '';
       if (b._entryConfirmed && b._completionCode && !b._completionConfirmed && bStatus !== 'completed') {
         completionBlock = '<div class="vcode vcode-complete">' +
-          '<small>ðŸ Completion Code</small>' +
+          '<small>� Completion Code</small>' +
           '<div class="vcode-val">' + esc(b._completionCode) + '</div>' +
           '<div class="vcode-hint">Show this code to the vendor to finalize the job.</div>' +
           '</div>';
@@ -470,18 +470,18 @@
       var ratingBlock = '';
       if (bStatus === 'completed' && !b._rated) {
         ratingBlock = '<div class="vcode vcode-ok" style="background:#f0fdf4;border-color:#86efac;">' +
-          '<small>âœ… Service completed!</small>' +
-          '<button class="btn btn-primary btn-sm" style="margin-top:8px;width:100%;" data-rate-booking="' + esc(b.id) + '" data-rate-asn="' + esc(b._assignmentId) + '" type="button">â­ Rate your experience</button>' +
+          '<small>✅ Service completed!</small>' +
+          '<button class="btn btn-primary btn-sm" style="margin-top:8px;width:100%;" data-rate-booking="' + esc(b.id) + '" data-rate-asn="' + esc(b._assignmentId) + '" type="button">� Rate your experience</button>' +
           '</div>';
       } else if (bStatus === 'completed' && b._rated) {
-        ratingBlock = '<div class="vcode vcode-ok" style="background:#f0fdf4;border-color:#86efac;"><small>âœ… Service completed â€” Thank you for rating!</small></div>';
+        ratingBlock = '<div class="vcode vcode-ok" style="background:#f0fdf4;border-color:#86efac;"><small>✅ Service completed — Thank you for rating!</small></div>';
       }
 
       var canCancel = bStatus === 'pending' || bStatus === 'confirmed';
       return '<div class="booking-card">' +
         '<div class="row"><div><h4>' + esc(b.service_name) + '</h4><div class="cat">' + esc(b.service_category) + '</div></div>' +
         '<span class="badge ' + esc(bStatus) + '">' + esc(bStatus.replace('_', ' ')) + '</span></div>' +
-        '<div class="meta"><span>Date: ' + esc(b.booking_date || '') + ' Â· ' + esc(b.booking_time || '') + '</span>' +
+        '<div class="meta"><span>Date: ' + esc(b.booking_date || '') + ' · ' + esc(b.booking_time || '') + '</span>' +
         '<span>Address: ' + esc(b.address || '') + '</span>' +
         '<span>' + priceLabel(b.service_price) + ' platform charge' + (b.payment_id ? ' - Paid' : '') + '</span>' +
         '<span style="color:var(--muted)">Booked ' + dt + '</span></div>' +
@@ -512,7 +512,7 @@
           body: '<p>Make sure the vendor has shown you the correct code before confirming.</p>',
           actions: [
             { label: 'Cancel', kind: 'btn-outline' },
-            { label: 'Confirm âœ“', kind: 'btn-primary', onClick: function () { confirmEntryCode(btn.dataset.confirmEntry, btn.dataset.asnId); } }
+            { label: 'Confirm ✓', kind: 'btn-primary', onClick: function () { confirmEntryCode(btn.dataset.confirmEntry, btn.dataset.asnId); } }
           ]
         });
       });
@@ -530,13 +530,13 @@
     $('#profAvatar').textContent = initial;
     $('#profName').textContent = u ? (u.name && u.name.trim() ? u.name : 'Add your name') : 'Not signed in';
     $('#profEmail').textContent = u ? (u.email || '') : '';
-    var ph = $('#profPhone'); if (ph) ph.textContent = u && u.phone ? 'ðŸ“± ' + u.phone : '';
+    var ph = $('#profPhone'); if (ph) ph.textContent = u && u.phone ? '📱 ' + u.phone : '';
     $('#sbAvatar').textContent = initial;
     $('#sbName').textContent = u ? (u.name && u.name.trim() ? u.name : 'Add your name') : 'Guest';
     $('#sbEmail').textContent = u ? (u.email || '') : '';
   }
 
-  /* â”€â”€ Navigation â”€â”€ */
+  /* ── Navigation ── */
   /* Top-level views (no back button): home, browse, bookings, profile, vendor-panel */
   var TOP_VIEWS = ['home', 'browse', 'bookings', 'profile', 'vendor-panel', 'vendor-reviews'];
 
@@ -587,23 +587,23 @@
     switchView(state.nav[state.nav.length - 1] || 'home', { replace: true });
   }
 
-  /* â”€â”€ Service detail â”€â”€ */
+  /* ── Service detail ── */
   function openServiceDetail(svc) {
     state.detailService = svc;
     $('#detImg').src = svc.img; $('#detImg').alt = svc.name;
     $('#detName').textContent = svc.name;
     $('#detCat').textContent = svc.cat;
-    $('#detRating').textContent = 'â˜… ' + svc.rating;
+    $('#detRating').textContent = '★ ' + svc.rating;
     $('#detDesc').textContent = svc.desc;
     $('#detDisclaimer').innerHTML = '<b>' + priceLabel(svcPrice(svc)) + '</b> is our platform charge. The vendor visits, assesses, and gives a transparent quote before any work begins.';
     switchView('detail');
   }
 
-  /* â”€â”€ Booking form â”€â”€ */
+  /* ── Booking form ── */
   function openBookingForm(svc) {
     state.bookService = svc;
     $('#bookSvcName').textContent = svc.name;
-    $('#bookSvcCat').textContent = svc.cat + ' Â· â˜… ' + svc.rating;
+    $('#bookSvcCat').textContent = svc.cat + ' · ★ ' + svc.rating;
     $('#bookDisclaimer').innerHTML = '<b>' + priceLabel(svcPrice(svc)) + '</b> is the platform charge. Final price decided after the vendor visit.';
     var submit = $('#bookSubmit'); if (submit) submit.textContent = 'Confirm booking - ' + priceLabel(svcPrice(svc));
     ['bookName', 'bookPhone', 'bookAddr', 'bookDate', 'bookNotes'].forEach(function (id) {
@@ -617,7 +617,7 @@
     switchView('book');
   }
 
-  /* â”€â”€ Razorpay payment flow â”€â”€ */
+  /* ── Razorpay payment flow ── */
   async function submitBooking() {
     if (!state.user) { showAuth(); setAuthMode('login'); return; }
     var name = $('#bookName').value.trim();
@@ -645,7 +645,7 @@
     }
 
     var btn = $('#bookSubmit');
-    btn.textContent = 'Processingâ€¦'; btn.disabled = true;
+    btn.textContent = 'Processing…'; btn.disabled = true;
 
     var order = null;
     try {
@@ -696,13 +696,13 @@
 
   function showSuccess(svcName) {
     $('#successTitle').textContent = 'Booking placed!';
-    $('#successMsg').textContent = 'Your ' + svcName + ' booking has been received. A vendor will review and accept it shortly â€” you\'ll see your verification code in "My bookings" once they accept.';
+    $('#successMsg').textContent = 'Your ' + svcName + ' booking has been received. A vendor will review and accept it shortly — you\'ll see your verification code in "My bookings" once they accept.';
     $('#successCodeWrap').style.display = 'none';
     switchView('success', { replace: true });
     toast('Booking placed!', 'success');
   }
 
-  /* â”€â”€ Auth wiring â”€â”€ */
+  /* ── Auth wiring ── */
   function setAuthMode(mode) {
     var isSignup = mode === 'signup';
     $('#tabLogin').classList.toggle('active', !isSignup);
@@ -781,7 +781,7 @@
     $('#tabLogin').addEventListener('click', function () { setAuthMode('login'); });
     $('#tabSignup').addEventListener('click', function () { setAuthMode('signup'); });
 
-    /* â”€â”€ Forgot password â”€â”€ */
+    /* ── Forgot password ── */
     function showForgot() {
       $('#authForm').style.display = 'none';
       $('#forgotPanel').style.display = '';
@@ -807,7 +807,7 @@
       if (!emailValid(email)) return showMsg('Please enter a valid email.', true);
       if (!c) return showMsg('Service not configured.', true);
       var btn = $('#forgotSubmit');
-      btn.textContent = 'Sendingâ€¦'; btn.disabled = true;
+      btn.textContent = 'Sending…'; btn.disabled = true;
       try {
         /* Check if a user with this email exists in our users table */
         var check = await c.from('users').select('id').eq('email', email).maybeSingle();
@@ -836,7 +836,7 @@
       if (pass.length < 6) return showErr('Password must be at least 6 characters.');
 
       var btn = $('#authSubmit');
-      btn.textContent = 'Please waitâ€¦'; btn.disabled = true;
+      btn.textContent = 'Please wait…'; btn.disabled = true;
 
       var res;
       if (mode === 'signup') {
@@ -857,7 +857,7 @@
       toast(mode === 'signup' ? 'Welcome to MGR!' : 'Welcome back!', 'success');
     });
 
-    /* â”€â”€ Reset password submit â”€â”€ */
+    /* ── Reset password submit ── */
     $('#resetSubmit').addEventListener('click', async function () {
       var c = getDB();
       var pass = $('#resetPass').value;
@@ -873,7 +873,7 @@
       if (pass !== confirm) return showMsg('Passwords do not match.', true);
       if (!c) return showMsg('Service not configured.', true);
       var btn = $('#resetSubmit');
-      btn.textContent = 'Updatingâ€¦'; btn.disabled = true;
+      btn.textContent = 'Updating…'; btn.disabled = true;
       try {
         var res = await c.auth.updateUser({ password: pass });
         btn.textContent = 'Update password'; btn.disabled = false;
@@ -907,7 +907,7 @@
     });
   }
 
-  /* â”€â”€ Sidebar â”€â”€ */
+  /* ── Sidebar ── */
   function openSidebar() {
     $('#sbDrawer').classList.add('open');
     $('#sbOverlay').classList.add('open');
@@ -1042,7 +1042,7 @@
       modal({
         title: 'Help & Support',
         body: '<p>For booking issues, vendor queries or refunds, contact MGR support.</p>' +
-          '<p style="margin-top:10px;">Email: support@mgrservices.in<br/>Hours: 9 AM â€“ 9 PM IST</p>',
+          '<p style="margin-top:10px;">Email: support@mgrservices.in<br/>Hours: 9 AM – 9 PM IST</p>',
         actions: [{ label: 'OK', kind: 'btn-primary' }]
       });
     });
@@ -1103,7 +1103,7 @@
     });
   }
 
-  /* â”€â”€ Vendor apply form â”€â”€ */
+  /* ── Vendor apply form ── */
   function renderVendorApplyView() {
     var notice = $('#vendorPendingNotice');
     var form = $('#vendorForm');
@@ -1162,7 +1162,7 @@
       state.vendorStatus = 'pending';
       syncSidebarVendor();
       $('#successTitle').textContent = 'Application received!';
-      $('#successMsg').textContent = 'Thanks ' + v.full_name.split(' ')[0] + '. We\'ll review and reach out within 2â€“3 business days.';
+      $('#successMsg').textContent = 'Thanks ' + v.full_name.split(' ')[0] + '. We\'ll review and reach out within 2–3 business days.';
       $('#successCodeWrap').style.display = 'none';
       ['vName', 'vPhone', 'vEmail', 'vAddr', 'vExp', 'vAbout'].forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ''; });
       $$('#skillsGrid .skill-chip').forEach(function (c) { c.classList.remove('selected'); });
@@ -1170,7 +1170,7 @@
     });
   }
 
-  /* â”€â”€ Vendor Panel (My Jobs) â”€â”€ */
+  /* ── Vendor Panel (My Jobs) ── */
   var vendorRow = null;
   var allVendorJobs = [];
   var vpFilter = 'all';
@@ -1194,7 +1194,7 @@
     var list = $('#vpList'); if (!list) return;
     var revEl = $('#vpReviews'); if (revEl) revEl.style.display = 'none';
     list.style.display = '';
-    list.innerHTML = '<div class="vp-empty">Loading your jobsâ€¦</div>';
+    list.innerHTML = '<div class="vp-empty">Loading your jobs…</div>';
     var c = getDB();
     if (!c) { list.innerHTML = '<div class="vp-empty">Backend not configured.</div>'; return; }
     var v = await getVendorRow();
@@ -1261,8 +1261,8 @@
       return '<div class="vp-card">' +
         '<div class="vp-card-head"><div style="min-width:0;flex:1;"><div class="vp-svc">' + esc(b.service_name || 'Service') + '</div><div class="vp-cat">' + esc(b.service_category || '') + '</div></div>' +
         '<span class="vp-badge ' + (colorMap[sk] || 'vp-b-gry') + '">' + (labelMap[sk] || sk) + '</span></div>' +
-        (cust ? '<div class="vp-cust">Customer: ' + esc(cust) + (phone ? '<small>Â· ' + esc(phone) + '</small>' : '') + '</div>' : '') +
-        '<div class="vp-meta"><span>' + esc(b.booking_date || 'N/A') + '</span><span>' + esc(b.booking_time || 'N/A') + '</span><span>' + esc(b.address || 'No address') + '</span><span class="vp-price">â‚¹' + (b.service_price != null ? b.service_price : 99) + '</span></div>' +
+        (cust ? '<div class="vp-cust">Customer: ' + esc(cust) + (phone ? '<small>· ' + esc(phone) + '</small>' : '') + '</div>' : '') +
+        '<div class="vp-meta"><span>' + esc(b.booking_date || 'N/A') + '</span><span>' + esc(b.booking_time || 'N/A') + '</span><span>' + esc(b.address || 'No address') + '</span><span class="vp-price">₹' + (b.service_price != null ? b.service_price : 99) + '</span></div>' +
         codeBlock + waitBlock +
         (actions ? '<div class="vp-actions">' + actions + '</div>' : '') +
         '</div>';
@@ -1283,7 +1283,7 @@
       title: 'Reject this job?',
       body: '<div class="field">' +
         '<label style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);">Reason for rejection</label>' +
-        '<textarea id="vpRejectReason" rows="3" placeholder="e.g. Not available on this dateâ€¦" ' +
+        '<textarea id="vpRejectReason" rows="3" placeholder="e.g. Not available on this date…" ' +
         'style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;margin-top:6px;outline:none;resize:none;"></textarea>' +
         '</div>',
       actions: [
@@ -1342,12 +1342,12 @@
             }
             if (code.toUpperCase() !== asn.data.completion_code.toUpperCase()) {
               document.getElementById('vpCodeInput').style.borderColor = '#e63946';
-              return toast('Wrong code â€” ask the customer to read it again.', 'error');
+              return toast('Wrong code — ask the customer to read it again.', 'error');
             }
             await c.from('assignments').update({ status: 'completed', completion_confirmed: true }).eq('id', id);
             if (asn.data.booking_id) await c.from('bookings').update({ status: 'completed' }).eq('id', asn.data.booking_id);
             close();
-            toast('Job completed! Great work. ðŸŽ‰', 'success');
+            toast('Job completed! Great work. 🎉', 'success');
             loadVendorJobs();
           }
         }
@@ -1364,7 +1364,7 @@
 
   async function loadVendorReviews() {
     var el = $('#vpReviews'); if (!el) return;
-    el.innerHTML = '<div class="vp-empty">Loading reviewsâ€¦</div>';
+    el.innerHTML = '<div class="vp-empty">Loading reviews…</div>';
     var c = getDB(); if (!c) { el.innerHTML = '<div class="vp-empty">Backend not configured.</div>'; return; }
     var v = await getVendorRow();
     if (!v) { el.innerHTML = '<div class="vp-empty">Vendor profile not found.</div>'; return; }
@@ -1379,7 +1379,7 @@
       var rows = (res.data || []).filter(function (r) { return r.rating; });
 
       if (!rows.length) {
-        el.innerHTML = '<div class="vp-empty"><div style="font-size:32px;margin-bottom:10px;">â­</div><h4 style="color:var(--ink);margin-bottom:6px;">No reviews yet</h4><p>Completed jobs will show customer ratings here.</p></div>';
+        el.innerHTML = '<div class="vp-empty"><div style="font-size:32px;margin-bottom:10px;">�</div><h4 style="color:var(--ink);margin-bottom:6px;">No reviews yet</h4><p>Completed jobs will show customer ratings here.</p></div>';
         return;
       }
 
@@ -1387,13 +1387,13 @@
       var total = rows.length;
       var sum = rows.reduce(function (s, r) { return s + (r.rating || 0); }, 0);
       var avg = (sum / total).toFixed(1);
-      var dist = [0, 0, 0, 0, 0]; // index 0=1â˜… â€¦ 4=5â˜…
+      var dist = [0, 0, 0, 0, 0]; // index 0=1★ … 4=5★
       rows.forEach(function (r) { if (r.rating >= 1 && r.rating <= 5) dist[r.rating - 1]++; });
       var maxDist = Math.max.apply(null, dist) || 1;
 
       var starsHtml = function (n) {
         var s = '';
-        for (var i = 1; i <= 5; i++) s += '<span style="color:' + (i <= n ? '#f59e0b' : '#e2e8f0') + ';font-size:16px;">â˜…</span>';
+        for (var i = 1; i <= 5; i++) s += '<span style="color:' + (i <= n ? '#f59e0b' : '#e2e8f0') + ';font-size:16px;">★</span>';
         return s;
       };
 
@@ -1402,7 +1402,7 @@
         var count = dist[star - 1];
         var pct = Math.round((count / maxDist) * 100);
         distRows += '<div class="vpr-dist-row">' +
-          '<span class="vpr-dist-label">' + star + 'â˜…</span>' +
+          '<span class="vpr-dist-label">' + star + '★</span>' +
           '<div class="vpr-dist-bar-wrap"><div class="vpr-dist-bar" style="width:' + pct + '%"></div></div>' +
           '<span class="vpr-dist-count">' + count + '</span>' +
           '</div>';
@@ -1418,7 +1418,7 @@
           '<span class="vpr-rating-num">' + r.rating + '/5</span>' +
           '</div>' +
           (r.review ? '<div class="vpr-review-text">"' + esc(r.review) + '"</div>' : '') +
-          '<div class="vpr-meta">' + (svc ? esc(svc) : '') + (date ? ' Â· ' + esc(date) : '') + '</div>' +
+          '<div class="vpr-meta">' + (svc ? esc(svc) : '') + (date ? ' · ' + esc(date) : '') + '</div>' +
           '</div>';
       }).join('');
 
@@ -1440,7 +1440,7 @@
 
   async function loadVendorReviewsPage() {
     var el = $('#vrContent'); if (!el) return;
-    el.innerHTML = '<div class="vp-empty">Loading reviewsâ€¦</div>';
+    el.innerHTML = '<div class="vp-empty">Loading reviews…</div>';
     var c = getDB(); if (!c) { el.innerHTML = '<div class="vp-empty">Backend not configured.</div>'; return; }
     var v = await getVendorRow();
     if (!v) { el.innerHTML = '<div class="vp-empty">Vendor profile not found.</div>'; return; }
@@ -1455,7 +1455,7 @@
       var rows = (res.data || []).filter(function (r) { return r.rating; });
 
       if (!rows.length) {
-        el.innerHTML = '<div class="vp-empty"><div style="font-size:40px;margin-bottom:12px;">â­</div><h4 style="color:var(--ink);margin-bottom:6px;">No reviews yet</h4><p>Completed jobs will show customer ratings here.</p></div>';
+        el.innerHTML = '<div class="vp-empty"><div style="font-size:40px;margin-bottom:12px;">�</div><h4 style="color:var(--ink);margin-bottom:6px;">No reviews yet</h4><p>Completed jobs will show customer ratings here.</p></div>';
         return;
       }
 
@@ -1467,14 +1467,14 @@
       var maxDist = Math.max.apply(null, dist) || 1;
 
       function starsHtml(n) {
-        var s = ''; for (var i = 1; i <= 5; i++) s += '<span style="color:' + (i <= n ? '#f59e0b' : '#e2e8f0') + ';font-size:18px;">â˜…</span>'; return s;
+        var s = ''; for (var i = 1; i <= 5; i++) s += '<span style="color:' + (i <= n ? '#f59e0b' : '#e2e8f0') + ';font-size:18px;">★</span>'; return s;
       }
 
       var distRows = '';
       for (var star = 5; star >= 1; star--) {
         var cnt = dist[star - 1], pct = Math.round((cnt / maxDist) * 100);
         distRows += '<div class="vpr-dist-row">' +
-          '<span class="vpr-dist-label">' + star + 'â˜…</span>' +
+          '<span class="vpr-dist-label">' + star + '★</span>' +
           '<div class="vpr-dist-bar-wrap"><div class="vpr-dist-bar" style="width:' + pct + '%"></div></div>' +
           '<span class="vpr-dist-count">' + cnt + '</span></div>';
       }
@@ -1485,7 +1485,7 @@
           '<div class="vpr-card-top">' + starsHtml(r.rating) + '<span class="vpr-rating-num">' + r.rating + '/5</span></div>' +
           (r.review ? '<div class="vpr-review-text">"' + esc(r.review) + '"</div>' : '') +
           '<div class="vpr-meta">' + (b.service_name ? esc(b.service_name) : '') +
-          (b.booking_date ? ' Â· ' + esc(b.booking_date) : '') +
+          (b.booking_date ? ' · ' + esc(b.booking_date) : '') +
           '</div></div>';
       }).join('');
 
@@ -1538,7 +1538,7 @@
     });
   }
 
-  /* â”€â”€ Realtime Listeners â”€â”€ */
+  /* ── Realtime Listeners ── */
   var _rtChannels = [];
 
   function startRealtimeListeners() {
@@ -1547,7 +1547,7 @@
     _rtChannels.forEach(function (ch) { try { c.removeChannel(ch); } catch (e) { } });
     _rtChannels = [];
 
-    // Watch vendor_requests â€” fires when admin approves/rejects
+    // Watch vendor_requests — fires when admin approves/rejects
     var chVR = c.channel('app-rt-vendor-requests')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'vendor_requests' }, function (payload) {
         if (!state.user) return;
@@ -1559,7 +1559,7 @@
       .subscribe();
     _rtChannels.push(chVR);
 
-    // Watch vendors table â€” fires when admin creates a vendor record
+    // Watch vendors table — fires when admin creates a vendor record
     var chV = c.channel('app-rt-vendors')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'vendors' }, function (payload) {
         if (!state.user) return;
@@ -1572,7 +1572,7 @@
       .subscribe();
     _rtChannels.push(chV);
 
-    // Watch users table â€” fires when admin bans/unbans a user or changes role
+    // Watch users table — fires when admin bans/unbans a user or changes role
     var chU = c.channel('app-rt-users')
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, async function (payload) {
         if (!state.user) return;
@@ -1596,7 +1596,7 @@
       .subscribe();
     _rtChannels.push(chU);
 
-    // Watch bookings â€” fires when vendor accepts/updates a booking
+    // Watch bookings — fires when vendor accepts/updates a booking
     var chB = c.channel('app-rt-bookings')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, function (payload) {
         if (!state.user) return;
@@ -1609,7 +1609,7 @@
       .subscribe();
     _rtChannels.push(chB);
 
-    // Watch assignments â€” fires when entry_code set, entry_confirmed, completion_code set, completed
+    // Watch assignments — fires when entry_code set, entry_confirmed, completion_code set, completed
     var chA = c.channel('app-rt-assignments')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'assignments' }, function () {
         if (!state.user) return;
@@ -1619,7 +1619,7 @@
     _rtChannels.push(chA);
   }
 
-  /* â”€â”€ Boot â”€â”€ */
+  /* ── Boot ── */
   async function boot() {
     var c = getDB();
     rebuildServiceMeta();
@@ -1677,10 +1677,10 @@
         }
       });
 
-      /* â”€â”€ Realtime: watch vendor_requests + vendors + users for live updates â”€â”€ */
+      /* ── Realtime: watch vendor_requests + vendors + users for live updates ── */
       startRealtimeListeners();
     } else {
-      console.warn('MGR: Supabase not configured â€” check window.__MGR_CFG__');
+      console.warn('MGR: Supabase not configured — check window.__MGR_CFG__');
     }
 
     wireAuth(); wireTopBar(); wireSidebar(); wireBottomNav(); wireDetail(); wireSuccess(); wireProfile(); wireVendor(); wireBookForm(); wireVendorPanel();
@@ -1697,4 +1697,3 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
-
