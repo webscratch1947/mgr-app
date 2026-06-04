@@ -224,8 +224,16 @@
         </div>
         <div class="field">
           <label for="authPass">Password</label>
-          <input id="authPass" type="password" autocomplete="current-password" placeholder="Min. 6 characters"
-            required />
+          <div class="password-control">
+            <input id="authPass" type="password" autocomplete="current-password" placeholder="Min. 6 characters"
+              required />
+            <button class="password-eye" type="button" aria-label="Show password" data-toggle-password="authPass">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div class="auth-error" id="authError" style="display:none;"></div>
         <button class="btn btn-primary btn-black btn-full" type="submit" id="authSubmit">Log In</button>
@@ -239,7 +247,7 @@
       <!-- FORGOT PASSWORD PANEL -->
       <div id="forgotPanel" style="display:none;">
         <p style="font-size:13px;color:#555;margin-bottom:12px;">Enter your registered email and we'll send a reset
-          link.</p>
+          link. The email opens the secure MGR website reset page, then you can return here and log in.</p>
         <div class="field">
           <label for="forgotEmail">Email</label>
           <input id="forgotEmail" type="email" inputmode="email" placeholder="you@example.com" />
@@ -256,14 +264,30 @@
       <!-- RESET PASSWORD PANEL (shown when user clicks email link) -->
       <div id="resetPanel" style="display:none;">
         <h3 style="font-size:17px;font-weight:700;margin-bottom:6px;">Set new password</h3>
-        <p style="font-size:13px;color:#555;margin-bottom:16px;">Enter a new password for your account.</p>
+        <p style="font-size:13px;color:#555;margin-bottom:16px;">Enter a new password for your MGR account.</p>
         <div class="field">
           <label for="resetPass">New password</label>
-          <input id="resetPass" type="password" placeholder="Min. 6 characters" autocomplete="new-password" />
+          <div class="password-control">
+            <input id="resetPass" type="password" placeholder="Min. 6 characters" autocomplete="new-password" />
+            <button class="password-eye" type="button" aria-label="Show new password" data-toggle-password="resetPass">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div class="field">
           <label for="resetPassConfirm">Confirm password</label>
-          <input id="resetPassConfirm" type="password" placeholder="Repeat new password" autocomplete="new-password" />
+          <div class="password-control">
+            <input id="resetPassConfirm" type="password" placeholder="Repeat new password" autocomplete="new-password" />
+            <button class="password-eye" type="button" aria-label="Show confirm password" data-toggle-password="resetPassConfirm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div id="resetMsg" style="display:none;font-size:13px;margin-bottom:8px;"></div>
         <button class="btn btn-primary btn-black btn-full" type="button" id="resetSubmit">Update password</button>
