@@ -44,11 +44,11 @@
 
   function svcPrice(s) {
     if (s && s.price === 0) return 0;
-    var price = Number(s && s.price != null ? s.price : window.MGR_PLATFORM_CHARGE);
+    var price = Number(s && s.price != null ? s.price : (s && s.service_price != null ? s.service_price : window.MGR_PLATFORM_CHARGE));
     return Number.isFinite(price) && price > 0 ? price : 99;
   }
 
-  function isFree(s) { return s && (svcPrice(s) === 0 || (s.name && s.name.toLowerCase().indexOf('ac service') !== -1)); }
+  function isFree(s) { return s && svcPrice(s) === 0; }
 
   function priceLabel(value) {
     var amount = Number(value);
@@ -61,11 +61,11 @@
     return {
       id: Number(s.id),
       name: s.name || 'Service',
-      cat: s.cat || s.service_category || 'Services',
-      img: s.img || s.service_image || '',
+      cat: s.cat || s.category || s.service_category || 'Services',
+      img: s.img || s.image_url || s.service_image || '',
       price: svcPrice(s),
       rating: Number(s.rating || 4.8),
-      desc: s.desc || '',
+      desc: s.desc || s.description || '',
       badge: s.badge || ''
     };
   }
@@ -75,26 +75,24 @@
     window.MGR_CATEGORIES = ['All'].concat(uniqueBy(window.MGR_SERVICES, function (s) { return s.cat; }));
   }
 
-  async function loadWebsiteServiceCatalog() {
-    var base = apiBase() || window.location.origin || '';
-    if (!base) { rebuildServiceMeta(); return false; }
-    base = base.replace(/\/$/, '');
-    var urls = [base + '/app.html', base + '/index.html'];
-    for (var i = 0; i < urls.length; i++) {
+  async function loadServiceCatalog() {
+    var c = getDB();
+    if (c) {
       try {
-        var res = await fetch(urls[i] + '?catalog=' + Date.now(), { cache: 'no-store' });
-        if (!res.ok) continue;
-        var html = await res.text();
-        var match = html.match(/const\s+SERVICES\s*=\s*(\[[\s\S]*?\]);/);
-        if (!match) continue;
-        var parsed = (new Function('return (' + match[1] + ');'))();
-        if (Array.isArray(parsed) && parsed.length) {
-          window.MGR_SERVICES = parsed.map(normalizeService);
+        var res = await c
+          .from('services')
+          .select('id,name,category,image_url,price,rating,description,badge,sort_order,is_active')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true })
+          .order('id', { ascending: true });
+        if (!res.error && Array.isArray(res.data) && res.data.length) {
+          window.MGR_SERVICES = res.data.map(normalizeService);
           rebuildServiceMeta();
           return true;
         }
+        if (res.error && res.error.code !== '42P01') console.warn('Supabase service catalog sync failed:', res.error.message || res.error);
       } catch (e) {
-        console.warn('Service catalog sync failed:', e);
+        console.warn('Supabase service catalog sync failed:', e);
       }
     }
     rebuildServiceMeta();
@@ -1650,9 +1648,9 @@
   async function boot() {
     var c = getDB();
     rebuildServiceMeta();
-    await loadWebsiteServiceCatalog();
-    setInterval(function () { loadWebsiteServiceCatalog().then(refreshCatalogViews); }, 5 * 60 * 1000);
-    window.addEventListener('focus', function () { loadWebsiteServiceCatalog().then(refreshCatalogViews); });
+    await loadServiceCatalog();
+    setInterval(function () { loadServiceCatalog().then(refreshCatalogViews); }, 5 * 60 * 1000);
+    window.addEventListener('focus', function () { loadServiceCatalog().then(refreshCatalogViews); });
 
     var isRecoveryLink = hasRecoveryParams();
 
