@@ -43,6 +43,8 @@
   }
 
   function svcPrice(s) {
+    /* AC Service & Repair is always free — no platform charge */
+    if (s && (s.name === 'AC Service & Repair' || s.service_name === 'AC Service & Repair')) return 0;
     if (s && s.price === 0) return 0;
     var price = Number(s && s.price != null ? s.price : (s && s.service_price != null ? s.service_price : window.MGR_PLATFORM_CHARGE));
     return Number.isFinite(price) && price > 0 ? price : 99;
@@ -173,6 +175,12 @@
 
   function setUserFromRow(authUser, row) {
     if (!row) { state.user = null; syncProfileUI(); return; }
+    // Check if banned — show ban overlay immediately
+    if (row.is_banned) {
+      var overlay = document.getElementById('banOverlay');
+      if (overlay) overlay.style.display = 'flex';
+      return;
+    }
     state.user = {
       authId: authUser.id,
       dbId: row.id,
@@ -1608,14 +1616,10 @@
           state.user.role = row.role;
           refreshVendorState();
         }
-        // Handle ban: sign out the user if banned
+        // Handle ban: show full-screen ban overlay
         if (row.is_banned) {
-          toast('Your account has been suspended. Please contact support.', 'error');
-          setTimeout(async function () {
-            var c2 = getDB(); if (c2) await c2.auth.signOut();
-            state.user = null; state.vendorStatus = 'none';
-            syncProfileUI(); syncSidebarVendor(); showAuth(); setAuthMode('login');
-          }, 2000);
+          var overlay = document.getElementById('banOverlay');
+          if (overlay) overlay.style.display = 'flex';
         }
       })
       .subscribe();
