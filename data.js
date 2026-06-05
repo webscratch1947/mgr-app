@@ -4,7 +4,7 @@ var MGR_PRICE_DISCLAIMER = "₹99 is our platform charge. After the vendor visit
 
 var MGR_SERVICES = [
   { id: 1,  name: 'Home Deep Cleaning',      cat: 'Cleaning',     img: 'https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=600',  rating: 4.9, desc: 'Full home deep cleaning by professionals with eco-friendly products.' },
-  { id: 2,  name: 'AC Service & Repair',     cat: 'Appliances',   img: 'https://images.pexels.com/photos/5463575/pexels-photo-5463575.jpeg?auto=compress&cs=tinysrgb&w=600',  rating: 4.9, desc: 'Complete AC servicing, gas refilling and repair.', price: 0, badge: 'FREE' },
+  { id: 2,  name: 'AC Service & Repair',     cat: 'Appliances',   img: 'https://images.pexels.com/photos/5463575/pexels-photo-5463575.jpeg?auto=compress&cs=tinysrgb&w=600',  rating: 4.9, desc: 'Complete AC servicing, gas refilling and repair.', price: 5, badge: 'Popular' },
   { id: 3,  name: 'Refrigerator Repair',     cat: 'Appliances',   img: 'https://images.pexels.com/photos/9551373/pexels-photo-9551373.jpeg?auto=compress&cs=tinysrgb&w=600',  rating: 4.8, desc: 'Expert fridge repair for all brands — cooling, compressor, gas.' },
   { id: 4,  name: 'Washing Machine Repair',  cat: 'Appliances',   img: 'https://images.pexels.com/photos/5591581/pexels-photo-5591581.jpeg?auto=compress&cs=tinysrgb&w=600',  rating: 4.7, desc: 'Front load and top load washing machine repair.' },
   { id: 5,  name: 'Microwave Repair',        cat: 'Appliances',   img: 'https://images.pexels.com/photos/32168944/pexels-photo-32168944.jpeg?auto=compress&cs=tinysrgb&w=600', rating: 4.6, desc: 'Microwave oven repair and servicing for all brands.' },
