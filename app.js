@@ -43,6 +43,8 @@
   }
 
   function svcPrice(s) {
+    /* AC Service & Repair is always free — no platform charge */
+    if (s && (s.name === 'AC Service & Repair' || s.service_name === 'AC Service & Repair')) return 0;
     if (s && s.price === 0) return 0;
     var price = Number(s && s.price != null ? s.price : (s && s.service_price != null ? s.service_price : window.MGR_PLATFORM_CHARGE));
     return Number.isFinite(price) && price > 0 ? price : 99;
