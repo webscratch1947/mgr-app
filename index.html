@@ -696,6 +696,20 @@
 
     </div><!-- /views-wrap -->
 
+    <!-- BAN SCREEN OVERLAY -->
+    <div id="banOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0f172a,#1e293b);align-items:center;justify-content:center;padding:20px;flex-direction:column;">
+      <div style="max-width:400px;width:100%;background:#fff;border-radius:20px;padding:32px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.5);">
+        <div style="font-size:52px;margin-bottom:12px;">🚫</div>
+        <h2 style="font-family:'Poppins';font-weight:800;font-size:22px;color:#0f172a;margin-bottom:8px;">Account Banned</h2>
+        <p id="banOverlayText" style="font-size:14px;color:#475569;line-height:1.7;margin-bottom:18px;">Your account has been permanently banned by admin. You cannot access this service.</p>
+        <div style="background:#fef3c7;border-radius:10px;padding:10px 14px;margin-bottom:20px;">
+          <p style="font-size:12px;color:#92400e;font-weight:600;margin:0;">Contact us to appeal your ban.</p>
+        </div>
+        <a href="mailto:mgrallinoneservices@gmail.com?subject=Account%20Ban%20Appeal&body=Hello%2C%0A%0AI%20would%20like%20to%20appeal%20my%20account%20ban.%0A%0AEmail%3A%20%0AReason%3A%20" style="display:block;width:100%;box-sizing:border-box;background:#e63946;color:#fff;font-family:'Poppins';font-weight:700;font-size:14px;padding:14px;border-radius:12px;text-decoration:none;margin-bottom:10px;">✉️ Appeal — mgrallinoneservices@gmail.com</a>
+        <button onclick="(async function(){var c=window._mgrDB;if(c)await c.auth.signOut();document.getElementById('banOverlay').style.display='none';})()" style="width:100%;padding:12px;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-family:'Poppins';font-weight:600;font-size:14px;cursor:pointer;color:#475569;">Logout</button>
+      </div>
+    </div>
+
     <!-- BOTTOM NAV -->
     <nav class="bottom-nav" id="bottomNav">
       <button class="bn-tab active" data-go="home">
