@@ -31,7 +31,7 @@ CREATE POLICY "services_write_admin" ON public.services
 INSERT INTO public.services (id, name, category, image_url, price, rating, description, badge, sort_order, is_active)
 VALUES
   (1, 'Home Deep Cleaning', 'Cleaning', 'https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=600', 99, 4.9, 'Full home deep cleaning by professionals with eco-friendly products.', 'Bestseller', 1, TRUE),
-  (2, 'AC Service & Repair', 'Appliances', 'https://images.pexels.com/photos/5463575/pexels-photo-5463575.jpeg?auto=compress&cs=tinysrgb&w=600', 5, 4.9, 'Complete AC servicing, gas refilling and repair.', 'Popular', 2, TRUE),
+  (2, 'AC Service & Repair', 'Appliances', 'https://images.pexels.com/photos/5463575/pexels-photo-5463575.jpeg?auto=compress&cs=tinysrgb&w=600', 0, 4.9, 'Complete AC servicing, gas refilling and repair.', 'Popular', 2, TRUE),
   (3, 'Refrigerator Repair', 'Appliances', 'https://images.pexels.com/photos/9551373/pexels-photo-9551373.jpeg?auto=compress&cs=tinysrgb&w=600', 99, 4.8, 'Expert fridge repair for all brands - cooling, compressor, gas.', NULL, 3, TRUE),
   (4, 'Washing Machine Repair', 'Appliances', 'https://images.pexels.com/photos/5591581/pexels-photo-5591581.jpeg?auto=compress&cs=tinysrgb&w=600', 99, 4.7, 'Front load and top load washing machine repair.', NULL, 4, TRUE),
   (5, 'Microwave Repair', 'Appliances', 'https://images.pexels.com/photos/32168944/pexels-photo-32168944.jpeg?auto=compress&cs=tinysrgb&w=600', 99, 4.6, 'Microwave oven repair and servicing for all brands.', NULL, 5, TRUE),
@@ -68,3 +68,11 @@ ON CONFLICT (id) DO UPDATE SET
   sort_order = EXCLUDED.sort_order,
   is_active = EXCLUDED.is_active,
   updated_at = NOW();
+
+
+-- ───────────────────────────────────────────────
+-- Make AC Service & Repair FREE (run this on your live Supabase DB)
+-- ───────────────────────────────────────────────
+UPDATE public.services
+SET price = 0, updated_at = NOW()
+WHERE name = 'AC Service & Repair';
