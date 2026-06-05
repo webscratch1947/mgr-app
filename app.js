@@ -1069,7 +1069,7 @@
       modal({
         title: 'Help & Support',
         body: '<p>For booking issues, vendor queries or refunds, contact MGR support.</p>' +
-          '<p style="margin-top:10px;">Email: support@mgrservices.in<br/>Hours: 9 AM – 9 PM IST</p>',
+          '<p style="margin-top:10px;">Email: mgrallinoneservices@gmail.com<br/>Hours: 9 AM – 9 PM</p>',
         actions: [{ label: 'OK', kind: 'btn-primary' }]
       });
     });
